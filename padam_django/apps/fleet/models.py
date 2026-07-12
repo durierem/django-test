@@ -2,10 +2,14 @@ from django.db import models
 
 
 class Driver(models.Model):
-    user = models.OneToOneField('users.User', on_delete=models.CASCADE, related_name='driver')
+    user = models.OneToOneField(
+        "users.User", on_delete=models.CASCADE, related_name="driver"
+    )
 
     def __str__(self):
-        return f"Driver: {self.user.username} (id: {self.pk})"
+        # This triggers N+1 by default, but let's assume that loading Driver objects without loading
+        # their related User is useless anyway so it's a good compromise for readability
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Bus(models.Model):
@@ -15,4 +19,4 @@ class Bus(models.Model):
         verbose_name_plural = "Buses"
 
     def __str__(self):
-        return f"Bus: {self.licence_plate} (id: {self.pk})"
+        return self.licence_plate

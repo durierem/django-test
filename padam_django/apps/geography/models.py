@@ -12,4 +12,13 @@ class Place(models.Model):
         unique_together = (("longitude", "latitude"), )
 
     def __str__(self):
-        return f"Place: {self.name} (id: {self.pk})"
+        return self.name
+
+
+class BusStop(models.Model):
+    place = models.OneToOneField(Place, models.PROTECT, primary_key=True)
+
+    def __str__(self):
+        # This triggers N+1 by default, but let's assume that loading BusStop objects without loading
+        # their related Place is useless anyway so it's a good compromise for readability
+        return self.place.name

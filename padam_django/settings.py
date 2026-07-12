@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+
+from django.utils.log import DEFAULT_LOGGING
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'padam_django.apps.fleet',
     'padam_django.apps.geography',
     'padam_django.apps.users',
+    'padam_django.apps.operations',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +140,16 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Enable SQL requests logging to hunt N+1 queries
+LOGGING = DEFAULT_LOGGING | {
+    'handlers': {
+        'console': DEFAULT_LOGGING['handlers']['console'] | {'level': 'DEBUG'}
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
+    },
+}
